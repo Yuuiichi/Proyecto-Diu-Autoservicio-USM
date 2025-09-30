@@ -290,6 +290,8 @@ const PersonalInfo = () => {
             </CardContent>
           </Card>
         </TabsContent>
+
+        
       </Tabs>
     </div>
   );

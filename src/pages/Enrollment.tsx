@@ -128,35 +128,9 @@ const Enrollment = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-accent/10 rounded-lg">
               <div>
-                <h3 className="font-medium">Total de Créditos Matriculados</h3>
-                <p className="text-2xl font-bold text-accent">{currentEnrollment.totalCredits}</p>
+                <h3 className="font-medium">Estado Actual De Matricula</h3>
+                <p className="text-2xl font-bold text-accent">Activa</p>
               </div>
-              <div className="text-right">
-                <p className="text-sm text-muted-foreground">Estado</p>
-                <Badge className="bg-accent text-accent-foreground">
-                  Matrícula Activa
-                </Badge>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <h4 className="font-medium">Materias Matriculadas</h4>
-              {currentEnrollment.subjects.map((subject, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex-1">
-                    <h5 className="font-medium">{subject.name}</h5>
-                    <p className="text-sm text-muted-foreground">Código: {subject.code}</p>
-                  </div>
-                  <div className="text-center mx-4">
-                    <p className="text-sm font-medium">{subject.credits} créditos</p>
-                  </div>
-                  <div>
-                    <Badge variant="outline" className="bg-primary/10 text-primary">
-                      Matriculado
-                    </Badge>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
         </CardContent>
