@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, FileText, Award, Clock, CheckCircle, Send } from 'lucide-react';
+import { Settings, FileText, Award, Clock, CheckCircle, Send, Download } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,35 +14,99 @@ const Services = () => {
   const { toast } = useToast();
   const [selectedService, setSelectedService] = useState('');
   const [requestDescription, setRequestDescription] = useState('');
+  const [selectedCertificateType, setSelectedCertificateType] = useState('');
+  const [selectedPurpose, setSelectedPurpose] = useState('');
 
-  const certificates = [
+  const certificateTypes = [
+    'Alumno Regular',
+    'Concentración de Notas',
+    'Curso y Créditos Aprobados',
+    'Egreso',
+    'Legalización de Plan de Estudio',
+    'Permanencia',
+    'Ramos Inscritos',
+    'Situación Académica',
+    'Arancel y Matrícula',
+    'Postulación a Prácticas',
+    'Seguro de Prácticas'
+  ];
+
+  const certificatePurposes = [
+    'Fines que estime conveniente',
+    'Rebajas de pasaje',
+    'Universidades',
+    'Bienestar Empresas',
+    'Becas y Beneficios',
+    'Trámites Bancarios',
+    'Postulación Laboral',
+    'Intercambio Internacional'
+  ];
+
+  const exemptCertificates = [
+    'Alumno Regular',
+    'Concentración de Notas',
+    'Arancel y Matrícula',
+    'Postulación a Prácticas',
+    'Seguro de Prácticas'
+  ];
+
+  const conventionalCertificates = [
     {
-      id: 'enrollment',
-      name: 'Certificado de Matrícula',
-      description: 'Certificado que acredita tu condición de estudiante activo',
-      cost: 15000,
-      deliveryTime: '1-2 días hábiles'
-    },
-    {
-      id: 'grades',
-      name: 'Certificado de Notas',
-      description: 'Historial académico completo con todas las calificaciones',
-      cost: 20000,
+      type: 'Curso y Créditos Aprobados',
+      cost: 3500,
       deliveryTime: '2-3 días hábiles'
     },
     {
-      id: 'conduct',
-      name: 'Certificado de Conducta',
-      description: 'Certificado de comportamiento académico y disciplinario',
-      cost: 15000,
+      type: 'Egreso',
+      cost: 4500,
+      deliveryTime: '3-5 días hábiles'
+    },
+    {
+      type: 'Legalización de Plan de Estudio',
+      cost: 5000,
+      deliveryTime: '5-7 días hábiles'
+    },
+    {
+      type: 'Permanencia',
+      cost: 3500,
+      deliveryTime: '2-3 días hábiles'
+    },
+    {
+      type: 'Ramos Inscritos',
+      cost: 3000,
       deliveryTime: '1-2 días hábiles'
     },
     {
-      id: 'degree',
-      name: 'Certificado de Grado',
-      description: 'Documento que certifica la obtención del título académico',
-      cost: 50000,
-      deliveryTime: '5-7 días hábiles'
+      type: 'Situación Académica',
+      cost: 4000,
+      deliveryTime: '2-3 días hábiles'
+    }
+  ];
+
+  const issuedCertificates = [
+    {
+      id: 'CERT-001',
+      name: 'Certificado de Matrícula',
+      requestDate: '2024-01-15',
+      issueDate: '2024-01-16',
+      type: 'PDF',
+      size: '320 KB'
+    },
+    {
+      id: 'CERT-002',
+      name: 'Certificado de Notas',
+      requestDate: '2024-01-10',
+      issueDate: '2024-01-12',
+      type: 'PDF',
+      size: '450 KB'
+    },
+    {
+      id: 'CERT-003',
+      name: 'Certificado de Alumno Regular',
+      requestDate: '2023-12-20',
+      issueDate: '2023-12-21',
+      type: 'PDF',
+      size: '295 KB'
     }
   ];
 
@@ -59,7 +123,7 @@ const Services = () => {
       type: 'Solicitud de Cambio de Programa',
       date: '2024-01-05',
       status: 'in_progress',
-      description: 'Cambio de Ingeniería de Sistemas a Ingeniería de Software'
+      description: 'Cambio de Ingeniería Civil Informática a Ingeniería Civil Industrial'
     },
     {
       id: 'REQ-003',
@@ -82,9 +146,9 @@ const Services = () => {
   ];
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CO', {
+    return new Intl.NumberFormat('es-CL', {
       style: 'currency',
-      currency: 'COP',
+      currency: 'CLP',
       minimumFractionDigits: 0
     }).format(amount);
   };
@@ -116,11 +180,27 @@ const Services = () => {
     }
   };
 
-  const handleCertificateRequest = (certificateId: string) => {
+  const handleCertificateRequest = () => {
+    if (!selectedCertificateType || !selectedPurpose) {
+      toast({
+        title: "Error",
+        description: "Por favor selecciona el tipo de certificado y el fin",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const isExempt = exemptCertificates.includes(selectedCertificateType);
+    
     toast({
       title: "Solicitud enviada",
-      description: "Tu solicitud de certificado ha sido procesada. Recibirás una notificación cuando esté listo.",
+      description: isExempt 
+        ? "Tu certificado se descargará automáticamente y será enviado a tu correo electrónico."
+        : "Tu solicitud ha sido procesada. Recibirás una notificación cuando esté listo.",
     });
+    
+    setSelectedCertificateType('');
+    setSelectedPurpose('');
   };
 
   const handleAdministrativeRequest = () => {
@@ -157,64 +237,169 @@ const Services = () => {
       </div>
 
       <Tabs defaultValue="certificates" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="certificates" className="flex items-center gap-2">
             <Award className="h-4 w-4" />
-            Certificados
+            Solicitar Certificados
+          </TabsTrigger>
+          <TabsTrigger value="downloads" className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            Certificados Emitidos
           </TabsTrigger>
           <TabsTrigger value="requests" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
-            Mis Solicitudes
+            Otras Solicitudes
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="certificates" className="space-y-6">
-          {/* Available Certificates */}
+          {/* Certificate Request Form */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Award className="h-5 w-5 text-primary" />
-                Certificados Disponibles
+                Solicitar Certificado
               </CardTitle>
               <CardDescription>
-                Solicita los certificados que necesites de manera rápida y segura
+                Selecciona el tipo de certificado y el fin para realizar tu solicitud
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-2">
-                {certificates.map((cert) => (
-                  <Card key={cert.id} className="border-2 hover:border-primary/50 transition-colors">
-                    <CardHeader>
-                      <CardTitle className="text-lg">{cert.name}</CardTitle>
-                      <CardDescription>{cert.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium">Costo:</span>
-                          <span className="text-lg font-bold text-primary">
-                            {formatCurrency(cert.cost)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium">Entrega:</span>
-                          <span className="text-sm text-muted-foreground">
-                            {cert.deliveryTime}
-                          </span>
-                        </div>
-                        <Button 
-                          className="w-full"
-                          onClick={() => handleCertificateRequest(cert.id)}
-                        >
-                          Solicitar Certificado
-                        </Button>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="certificate-type">Tipo de Certificado</Label>
+                  <Select value={selectedCertificateType} onValueChange={setSelectedCertificateType}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona el tipo de certificado" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {certificateTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                          {exemptCertificates.includes(type) && (
+                            <span className="ml-2 text-xs text-accent">(Exento)</span>
+                          )}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="purpose">Fin del Certificado</Label>
+                  <Select value={selectedPurpose} onValueChange={setSelectedPurpose}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona el fin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {certificatePurposes.map((purpose) => (
+                        <SelectItem key={purpose} value={purpose}>
+                          {purpose}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {selectedCertificateType && (
+                  <div className="p-4 rounded-lg bg-muted">
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">Modalidad:</span>
+                        {exemptCertificates.includes(selectedCertificateType) ? (
+                          <Badge className="bg-accent text-accent-foreground">
+                            Exento - Gratuito
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline">
+                            Convencional - Con costo
+                          </Badge>
+                        )}
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      {exemptCertificates.includes(selectedCertificateType) ? (
+                        <p className="text-sm text-muted-foreground">
+                          Este certificado se descargará automáticamente en PDF y será enviado a tu correo electrónico.
+                        </p>
+                      ) : (
+                        <>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Costo:</span>
+                            <span className="font-medium">
+                              {formatCurrency(
+                                conventionalCertificates.find(c => c.type === selectedCertificateType)?.cost || 0
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Tiempo de entrega:</span>
+                            <span className="text-sm">
+                              {conventionalCertificates.find(c => c.type === selectedCertificateType)?.deliveryTime}
+                            </span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <Button 
+                  onClick={handleCertificateRequest}
+                  className="w-full flex items-center gap-2"
+                  disabled={!selectedCertificateType || !selectedPurpose}
+                >
+                  <Send className="h-4 w-4" />
+                  Solicitar Certificado
+                </Button>
               </div>
             </CardContent>
           </Card>
+
+          {/* Information about certificate types */}
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card className="border-accent">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Award className="h-5 w-5 text-accent" />
+                  Certificados Exentos
+                </CardTitle>
+                <CardDescription>
+                  Gratuitos - Descarga y envío automático por correo
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {exemptCertificates.map((cert) => (
+                    <li key={cert} className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="h-4 w-4 text-accent" />
+                      {cert}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-primary" />
+                  Certificados Convencionales
+                </CardTitle>
+                <CardDescription>
+                  Con costo - Entrega tradicional
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {conventionalCertificates.map((cert) => (
+                    <li key={cert.type} className="flex items-center justify-between text-sm">
+                      <span>{cert.type}</span>
+                      <span className="text-muted-foreground">{formatCurrency(cert.cost)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Administrative Services */}
           <Card>
@@ -264,6 +449,52 @@ const Services = () => {
                   <Send className="h-4 w-4" />
                   Enviar Solicitud
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="downloads">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Download className="h-5 w-5 text-primary" />
+                Certificados Emitidos
+              </CardTitle>
+              <CardDescription>
+                Descarga los certificados que has solicitado anteriormente
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {issuedCertificates.map((cert) => (
+                  <div key={cert.id} className="flex items-center justify-between p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className="p-2 rounded-full bg-primary/10">
+                        <Award className="h-4 w-4 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium">{cert.name}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Solicitado: {cert.requestDate} • Emitido: {cert.issueDate}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {cert.type} • {cert.size}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge className="bg-accent/20 text-accent-foreground">
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        Disponible
+                      </Badge>
+                      <Button size="sm" className="flex items-center gap-2">
+                        <Download className="h-4 w-4" />
+                        Descargar
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>

@@ -54,10 +54,13 @@ export function AppSidebar() {
           {!isCollapsed && (
             <div>
               <h2 className="text-sm font-semibold text-sidebar-foreground">
-                Portal Universitario
+                Portal USM
               </h2>
+              <p className="text-xs text-sidebar-foreground/60">
+                Universidad Técnica Federico Santa María
+              </p>
               {user && (
-                <p className="text-xs text-sidebar-foreground/70">
+                <p className="text-xs text-sidebar-foreground/70 mt-1">
                   {user.firstName} {user.lastName}
                 </p>
               )}

@@ -23,10 +23,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const mockUser: User = {
   id: '1',
   email: 'estudiante@universidad.edu',
-  firstName: 'María',
-  lastName: 'González',
-  studentId: '2023001234',
-  program: 'Ingeniería de Sistemas'
+  firstName: 'Camila',
+  lastName: 'Rojas Pérez',
+  studentId: '201923456-7',
+  program: 'Ingeniería Civil Informática'
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

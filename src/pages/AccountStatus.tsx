@@ -1,5 +1,5 @@
 import React from 'react';
-import { Receipt, Download, Calendar, TrendingUp, DollarSign } from 'lucide-react';
+import { Receipt, Download, Calendar, TrendingUp, DollarSign, Award, Building2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,49 +8,113 @@ import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 const AccountStatus = () => {
   const accountSummary = {
-    totalBalance: -1350000,
-    pendingCharges: 1350000,
-    paidAmount: 2300000,
-    lastPayment: '2023-12-15'
+    totalBalance: -850000,
+    pendingCharges: 850000,
+    paidAmount: 2800000,
+    lastPayment: '2023-12-15',
+    scholarships: 950000,
+    bankPayments: 1850000
   };
+
+  const scholarships = [
+    {
+      id: 'SCH-001',
+      name: 'Beca Excelencia Académica USM',
+      amount: 600000,
+      period: '2024-1',
+      date: '2024-01-05',
+      status: 'active'
+    },
+    {
+      id: 'SCH-002',
+      name: 'Beca de Apoyo Socioeconómico',
+      amount: 350000,
+      period: '2024-1',
+      date: '2024-01-05',
+      status: 'active'
+    }
+  ];
+
+  const bankPayments = [
+    {
+      id: 'BP-001',
+      concept: 'Reembolso Arancel',
+      amount: 950000,
+      date: '2024-01-20',
+      bankAccount: '**** **** **** 1234',
+      status: 'completed'
+    },
+    {
+      id: 'BP-002',
+      concept: 'Ayuda Práctica Industrial',
+      amount: 900000,
+      date: '2024-01-15',
+      bankAccount: '**** **** **** 1234',
+      status: 'completed'
+    }
+  ];
 
   const movements = [
     {
       id: 'TXN-001',
       date: '2024-01-15',
-      concept: 'Matrícula Semestre 2024-1',
+      concept: 'Arancel Semestre 2024-1',
       type: 'charge',
-      amount: -1200000,
+      amount: -750000,
       status: 'pending'
     },
     {
       id: 'TXN-002',
       date: '2024-01-10',
-      concept: 'Laboratorios',
+      concept: 'Matrícula 2024-1',
       type: 'charge',
-      amount: -150000,
+      amount: -100000,
       status: 'pending'
     },
     {
       id: 'TXN-003',
-      date: '2023-12-15',
-      concept: 'Pago Matrícula 2023-2',
+      date: '2024-01-05',
+      concept: 'Pago Beca Excelencia Académica',
       type: 'payment',
-      amount: 1150000,
+      amount: 600000,
       status: 'completed'
     },
     {
       id: 'TXN-004',
-      date: '2023-12-01',
-      concept: 'Derechos de Grado',
+      date: '2024-01-05',
+      concept: 'Pago Beca Apoyo Socioeconómico',
       type: 'payment',
-      amount: 200000,
+      amount: 350000,
       status: 'completed'
     },
     {
       id: 'TXN-005',
+      date: '2023-12-20',
+      concept: 'Pago Ayudantía Cálculo I',
+      type: 'payment',
+      amount: 120000,
+      status: 'completed'
+    },
+    {
+      id: 'TXN-006',
+      date: '2023-12-15',
+      concept: 'Pago Arancel 2023-2',
+      type: 'payment',
+      amount: 1400000,
+      status: 'completed'
+    },
+    {
+      id: 'TXN-007',
+      date: '2023-12-01',
+      concept: 'Título Profesional',
+      type: 'payment',
+      amount: 250000,
+      status: 'completed'
+    },
+    {
+      id: 'TXN-008',
       date: '2023-08-15',
-      concept: 'Matrícula Semestre 2023-2',
+      concept: 'Arancel Semestre 2023-2',
       type: 'charge',
       amount: -1150000,
       status: 'completed'
@@ -67,7 +131,7 @@ const AccountStatus = () => {
     },
     {
       id: 'DOC-002',
-      name: 'Comprobante de Pago - Derechos de Grado',
+      name: 'Comprobante de Pago - Título Profesional',
       date: '2023-12-01',
       type: 'PDF',
       size: '180 KB'
@@ -82,9 +146,9 @@ const AccountStatus = () => {
   ];
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CO', {
+    return new Intl.NumberFormat('es-CL', {
       style: 'currency',
-      currency: 'COP',
+      currency: 'CLP',
       minimumFractionDigits: 0
     }).format(Math.abs(amount));
   };
@@ -128,22 +192,7 @@ const AccountStatus = () => {
       </div>
 
       {/* Account Summary */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Saldo Actual</CardTitle>
-            <Receipt className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className={`text-2xl font-bold ${getBalanceColor(accountSummary.totalBalance)}`}>
-              {accountSummary.totalBalance < 0 ? '-' : ''}{formatCurrency(accountSummary.totalBalance)}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {accountSummary.totalBalance < 0 ? 'Saldo pendiente' : 'Saldo a favor'}
-            </p>
-          </CardContent>
-        </Card>
-        
+      <div className="grid gap-4 md:grid-cols-1">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Cargos Pendientes</CardTitle>
@@ -156,37 +205,21 @@ const AccountStatus = () => {
             <p className="text-xs text-muted-foreground">Por pagar</p>
           </CardContent>
         </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Pagado</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-accent">
-              {formatCurrency(accountSummary.paidAmount)}
-            </div>
-            <p className="text-xs text-muted-foreground">Este año</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Último Pago</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{accountSummary.lastPayment}</div>
-            <p className="text-xs text-muted-foreground">Fecha</p>
-          </CardContent>
-        </Card>
       </div>
 
       <Tabs defaultValue="movements" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="movements" className="flex items-center gap-2">
             <Receipt className="h-4 w-4" />
             Movimientos
+          </TabsTrigger>
+          <TabsTrigger value="scholarships" className="flex items-center gap-2">
+            <Award className="h-4 w-4" />
+            Becas
+          </TabsTrigger>
+          <TabsTrigger value="bank-payments" className="flex items-center gap-2">
+            <Building2 className="h-4 w-4" />
+            Pagos Bancarios
           </TabsTrigger>
           <TabsTrigger value="documents" className="flex items-center gap-2">
             <Download className="h-4 w-4" />
@@ -226,6 +259,104 @@ const AccountStatus = () => {
                     </div>
                   );
                 })}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="scholarships">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Award className="h-5 w-5 text-primary" />
+                Becas Activas
+              </CardTitle>
+              <CardDescription>
+                Consulta las becas que tienes actualmente
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {scholarships.map((scholarship) => (
+                  <div key={scholarship.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <div className="p-2 rounded-full bg-accent/20">
+                        <Award className="h-4 w-4 text-accent" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium">{scholarship.name}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Período: {scholarship.period} • Otorgada: {scholarship.date}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-accent">
+                        {formatCurrency(scholarship.amount)}
+                      </p>
+                      <Badge className="bg-accent/20 text-accent-foreground">
+                        Activa
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+                <div className="pt-4 border-t">
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-medium">Total en Becas:</span>
+                    <span className="text-2xl font-bold text-accent">
+                      {formatCurrency(accountSummary.scholarships)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="bank-payments">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building2 className="h-5 w-5 text-primary" />
+                Pagos en Cuenta Bancaria
+              </CardTitle>
+              <CardDescription>
+                Historial de pagos recibidos en tu cuenta bancaria registrada
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {bankPayments.map((payment) => (
+                  <div key={payment.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <div className="p-2 rounded-full bg-primary/10">
+                        <TrendingUp className="h-4 w-4 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium">{payment.concept}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {payment.date} • Cuenta: {payment.bankAccount}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-accent">
+                        +{formatCurrency(payment.amount)}
+                      </p>
+                      <Badge className="bg-accent/20 text-accent-foreground">
+                        Pagado
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+                <div className="pt-4 border-t">
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-medium">Total Pagado en Cuenta:</span>
+                    <span className="text-2xl font-bold text-accent">
+                      {formatCurrency(accountSummary.bankPayments)}
+                    </span>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
