@@ -173,118 +173,96 @@ const Payments = () => {
         </TabsList>
 
         <TabsContent value="payment" className="space-y-6">
-          {/* Payment Summary */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="h-5 w-5 text-primary" />
-                Resumen de Pagos Pendientes
+                Pagos Pendientes
               </CardTitle>
               <CardDescription>
-                Conceptos pendientes de pago
+                Selecciona los conceptos que deseas pagar
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {pendingPayments.map((payment) => (
-                  <div key={payment.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex-1">
-                      <h3 className="font-medium">{payment.concept}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Vence: {payment.dueDate}
+                <div className="space-y-3">
+                  {pendingPayments.map((payment) => (
+                    <div 
+                      key={payment.id} 
+                      className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                    >
+                      <Checkbox 
+                        id={payment.id}
+                        checked={selectedPayments.includes(payment.id)}
+                        onCheckedChange={() => handlePaymentToggle(payment.id)}
+                      />
+                      <label 
+                        htmlFor={payment.id}
+                        className="flex-1 flex items-center justify-between cursor-pointer"
+                      >
+                        <div className="flex-1">
+                          <h3 className="font-medium">{payment.concept}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Vence: {payment.dueDate}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-bold">{formatCurrency(payment.amount)}</p>
+                          <Badge className={getStatusColor(payment.status)}>
+                            {getStatusText(payment.status)}
+                          </Badge>
+                        </div>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="border-t pt-4 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-semibold">Total de conceptos:</span>
+                    <span className="text-2xl font-bold text-primary">
+                      {formatCurrency(pendingPayments.reduce((sum, p) => sum + p.amount, 0))}
+                    </span>
+                  </div>
+
+                  {selectedPayments.length > 0 && (
+                    <div className="p-4 bg-accent/20 rounded-lg border border-primary/20">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">Total seleccionado:</span>
+                        <span className="text-xl font-bold text-primary">
+                          {formatCurrency(getSelectedTotal())}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {selectedPayments.length} concepto{selectedPayments.length > 1 ? 's' : ''} seleccionado{selectedPayments.length > 1 ? 's' : ''}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <p className="text-lg font-bold">{formatCurrency(payment.amount)}</p>
-                      <Badge className={getStatusColor(payment.status)}>
-                        {getStatusText(payment.status)}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-                
-                <div className="border-t pt-4 flex items-center justify-between">
-                  <span className="text-lg font-semibold">Total a Pagar:</span>
-                  <span className="text-2xl font-bold text-primary">
-                    {formatCurrency(pendingPayments.reduce((sum, p) => sum + p.amount, 0))}
-                  </span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                  )}
 
-          {/* Payment Form */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Realizar Pago</CardTitle>
-              <CardDescription>
-                Selecciona el concepto que deseas pagar
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Selecciona los conceptos a pagar</label>
-                  <div className="space-y-3">
-                    {pendingPayments.map((payment) => (
-                      <div 
-                        key={payment.id} 
-                        className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-accent/50 transition-colors"
-                      >
-                        <Checkbox 
-                          id={payment.id}
-                          checked={selectedPayments.includes(payment.id)}
-                          onCheckedChange={() => handlePaymentToggle(payment.id)}
-                        />
-                        <label 
-                          htmlFor={payment.id}
-                          className="flex-1 flex items-center justify-between cursor-pointer"
-                        >
-                          <span className="text-sm font-medium">{payment.concept}</span>
-                          <span className="text-sm font-bold">{formatCurrency(payment.amount)}</span>
-                        </label>
-                      </div>
-                    ))}
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <Button 
+                      onClick={handlePayment}
+                      className="flex items-center gap-2"
+                      disabled={selectedPayments.length === 0}
+                    >
+                      <CreditCard className="h-4 w-4" />
+                      Tarjeta de Crédito/Débito
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={handlePayment}
+                      disabled={selectedPayments.length === 0}
+                    >
+                      PSE
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={handlePayment}
+                      disabled={selectedPayments.length === 0}
+                    >
+                      Transferencia Bancaria
+                    </Button>
                   </div>
-                </div>
-
-                {selectedPayments.length > 0 && (
-                  <div className="p-4 bg-accent/20 rounded-lg border border-primary/20">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium">Total seleccionado:</span>
-                      <span className="text-xl font-bold text-primary">
-                        {formatCurrency(getSelectedTotal())}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {selectedPayments.length} concepto{selectedPayments.length > 1 ? 's' : ''} seleccionado{selectedPayments.length > 1 ? 's' : ''}
-                    </p>
-                  </div>
-                )}
-
-                <div className="grid gap-4 md:grid-cols-3">
-                  <Button 
-                    onClick={handlePayment}
-                    className="flex items-center gap-2"
-                    disabled={selectedPayments.length === 0}
-                  >
-                    <CreditCard className="h-4 w-4" />
-                    Tarjeta de Crédito/Débito
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    onClick={handlePayment}
-                    disabled={selectedPayments.length === 0}
-                  >
-                    PSE
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    onClick={handlePayment}
-                    disabled={selectedPayments.length === 0}
-                  >
-                    Transferencia Bancaria
-                  </Button>
                 </div>
               </div>
             </CardContent>

@@ -132,7 +132,7 @@ const Dashboard = () => {
         >
           <CarouselContent className="-ml-4">
             {quickActions.map((action, index) => (
-              <CarouselItem key={index} className="pl-4 basis-full md:basis-1/2 lg:basis-1/3">
+              <CarouselItem key={index} className="pl-4 basis-full md:basis-1/2 lg:basis-1/4">
                 <Card className="group hover:shadow-md transition-shadow h-full">
                   <CardHeader>
                     <div className="flex items-center gap-4">
